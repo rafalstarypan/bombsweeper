@@ -2,7 +2,6 @@ from enum import Enum, auto
 
 class CellType(Enum):
     BOMB  = auto()
-    FLAG  = auto()
     EMPTY = auto()
 
 
