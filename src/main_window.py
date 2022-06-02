@@ -4,7 +4,7 @@ from game_rules import *
 from game_controller import *
 
 
-class MainWindow:
+class MainView:
     __WIDTH = 700
     __HEIGHT = 800
     __BG_COLOR = "white"
@@ -25,10 +25,10 @@ class MainWindow:
 
     def __init__(self, game_mode: GameMode):
         self.__game_controller = GameController(game_mode)
-        self.__CELL_SIZE =  MainWindow.__WIDTH / self.__game_controller.get_size()
+        self.__CELL_SIZE =  MainView.__WIDTH / self.__game_controller.get_size()
         
         pygame.init()
-        self.__win = pygame.display.set_mode((MainWindow.__WIDTH, MainWindow.__HEIGHT))
+        self.__win = pygame.display.set_mode((MainView.__WIDTH, MainView.__HEIGHT))
         pygame.display.set_caption("BombSweeper")
         self.__NUM_FONT = pygame.font.SysFont('comicsans', 20)
         self.__FINAL_FONT = pygame.font.SysFont('comicsans', 70)
@@ -36,7 +36,7 @@ class MainWindow:
         
 
     def draw(self):
-        self.__win.fill(MainWindow.__BG_COLOR)
+        self.__win.fill(MainView.__BG_COLOR)
 
         size = self.__game_controller.get_size()
         current_time    = self.__game_controller.get_game_time()
@@ -45,8 +45,8 @@ class MainWindow:
         time_text = self.__TIME_FONT.render(f"Your time: {round(current_time)}", 1, "black")
         flag_text = self.__TIME_FONT.render(f"Remaining flags: {remaining_flags}", 1, "black")
 
-        self.__win.blit(time_text, (10, MainWindow.__HEIGHT - time_text.get_height()))
-        self.__win.blit(flag_text, (300, MainWindow.__HEIGHT - time_text.get_height()))
+        self.__win.blit(time_text, (10, MainView.__HEIGHT - time_text.get_height()))
+        self.__win.blit(flag_text, (300, MainView.__HEIGHT - time_text.get_height()))
 
         for i in range(size):
             for j in range(size):
@@ -54,24 +54,24 @@ class MainWindow:
                 x = self.__CELL_SIZE * j
 
                 if self.__game_controller.is_flag(i, j):
-                    pygame.draw.rect(self.__win, MainWindow.__FLAG_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
+                    pygame.draw.rect(self.__win, MainView.__FLAG_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
                     pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
                     continue
 
                 if self.__game_controller.is_covered(i, j):
-                    pygame.draw.rect(self.__win, MainWindow.__RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
+                    pygame.draw.rect(self.__win, MainView.__RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
                     pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
                     continue
                 
-                pygame.draw.rect(self.__win, MainWindow.__CLICKED_RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
+                pygame.draw.rect(self.__win, MainView.__CLICKED_RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
 
                 if self.__game_controller.is_bomb(i, j):
-                    pygame.draw.circle(self.__win, MainWindow.__BOMB_COLOR, (x + self.__CELL_SIZE/2, y + self.__CELL_SIZE/2), self.__CELL_SIZE/2 - 4)
+                    pygame.draw.circle(self.__win, MainView.__BOMB_COLOR, (x + self.__CELL_SIZE/2, y + self.__CELL_SIZE/2), self.__CELL_SIZE/2 - 4)
                 else:
                     pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
 
                 if (bombs := self.__game_controller.get_adjacent_bombs_count(i, j)) > 0:
-                    text = self.__NUM_FONT.render(str(bombs), 1, MainWindow.__NUM_COLORS[bombs])
+                    text = self.__NUM_FONT.render(str(bombs), 1, MainView.__NUM_COLORS[bombs])
                     self.__win.blit(text, (x + (self.__CELL_SIZE/2 - text.get_width()/2), y + (self.__CELL_SIZE/2 - text.get_height()/2)))
 
         pygame.display.update()
@@ -79,8 +79,8 @@ class MainWindow:
 
     def draw_final_message(self, text):
         text = self.__FINAL_FONT.render(text, 1, "black")
-        self.__win.blit(text, (MainWindow.__WIDTH/2 - text.get_width()/2,
-                    MainWindow.__HEIGHT/2 - text.get_height()/2))
+        self.__win.blit(text, (MainView.__WIDTH/2 - text.get_width()/2,
+                    MainView.__HEIGHT/2 - text.get_height()/2))
         pygame.display.update()
 
 
