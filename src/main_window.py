@@ -23,7 +23,7 @@ class MainView:
         8: "pink",
     }
 
-    def __init__(self, game_mode: GameMode):
+    def __init__(self, game_mode: GameMode, nickname: str):
         self.__game_controller = GameController(game_mode)
         self.__CELL_SIZE =  MainView.__WIDTH / self.__game_controller.get_size()
         
