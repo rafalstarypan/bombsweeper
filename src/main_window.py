@@ -1,12 +1,7 @@
 import pygame
 import time
 from game_rules import *
-from bomb_field import *
-
-class GameStatus(Enum):
-    IN_PROGRESS = auto()
-    LOST        = auto()
-    VICTORY     = auto()
+from game_controller import *
 
 
 class MainWindow:
@@ -29,13 +24,11 @@ class MainWindow:
     }
 
     def __init__(self, game_mode: GameMode):
-        self.bomb_field = BombFieldGrid(game_mode=game_mode)
-        self.start_time = time.time()
-        self.CELL_SIZE =  MainWindow.__WIDTH / self.bomb_field.get_size()
-        self.game_status = GameStatus.IN_PROGRESS
-
+        self.__game_controller = GameController(game_mode)
+        self.__CELL_SIZE =  MainWindow.__WIDTH / self.__game_controller.get_size()
+        
         pygame.init()
-        self.win = pygame.display.set_mode((MainWindow.__WIDTH, MainWindow.__HEIGHT))
+        self.__win = pygame.display.set_mode((MainWindow.__WIDTH, MainWindow.__HEIGHT))
         pygame.display.set_caption("BombSweeper")
         self.__NUM_FONT = pygame.font.SysFont('comicsans', 20)
         self.__FINAL_FONT = pygame.font.SysFont('comicsans', 70)
@@ -43,74 +36,75 @@ class MainWindow:
         
 
     def draw(self):
-        current_time = time.time() - self.start_time
-        self.win.fill(MainWindow.__BG_COLOR)
+        self.__win.fill(MainWindow.__BG_COLOR)
+
+        size = self.__game_controller.get_size()
+        current_time    = self.__game_controller.get_game_time()
+        remaining_flags = self.__game_controller.get_remaining_flags()
+
         time_text = self.__TIME_FONT.render(f"Your time: {round(current_time)}", 1, "black")
-        flag_text = self.__TIME_FONT.render(f"Remaining flags: {self.bomb_field.get_remaining_flags()}", 1, "black")
-        self.win.blit(time_text, (10, MainWindow.__HEIGHT - time_text.get_height()))
-        self.win.blit(flag_text, (300, MainWindow.__HEIGHT - time_text.get_height()))
+        flag_text = self.__TIME_FONT.render(f"Remaining flags: {remaining_flags}", 1, "black")
 
-        for i in range(self.bomb_field.get_size()):
-            for j in range(self.bomb_field.get_size()):
-                y = self.CELL_SIZE * i
-                x = self.CELL_SIZE * j
+        self.__win.blit(time_text, (10, MainWindow.__HEIGHT - time_text.get_height()))
+        self.__win.blit(flag_text, (300, MainWindow.__HEIGHT - time_text.get_height()))
 
-                if self.bomb_field.is_flag(i, j):
-                    pygame.draw.rect(self.win, MainWindow.__FLAG_COLOR, (x, y, self.CELL_SIZE, self.CELL_SIZE))
-                    pygame.draw.rect(self.win, "black", (x, y, self.CELL_SIZE, self.CELL_SIZE), 2)
+        for i in range(size):
+            for j in range(size):
+                y = self.__CELL_SIZE * i
+                x = self.__CELL_SIZE * j
+
+                if self.__game_controller.is_flag(i, j):
+                    pygame.draw.rect(self.__win, MainWindow.__FLAG_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
+                    pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
                     continue
 
-                if self.bomb_field.is_cell_covered(i, j):
-                    pygame.draw.rect(self.win, MainWindow.__RECT_COLOR, (x, y, self.CELL_SIZE, self.CELL_SIZE))
-                    pygame.draw.rect(self.win, "black", (x, y, self.CELL_SIZE, self.CELL_SIZE), 2)
+                if self.__game_controller.is_covered(i, j):
+                    pygame.draw.rect(self.__win, MainWindow.__RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
+                    pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
                     continue
                 
-                pygame.draw.rect(self.win, MainWindow.__CLICKED_RECT_COLOR, (x, y, self.CELL_SIZE, self.CELL_SIZE))
+                pygame.draw.rect(self.__win, MainWindow.__CLICKED_RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
 
-                if self.bomb_field.is_bomb(i, j):
-                    pygame.draw.circle(self.win, MainWindow.__BOMB_COLOR, (x + self.CELL_SIZE/2, y + self.CELL_SIZE/2), self.CELL_SIZE/2 - 4)
+                if self.__game_controller.is_bomb(i, j):
+                    pygame.draw.circle(self.__win, MainWindow.__BOMB_COLOR, (x + self.__CELL_SIZE/2, y + self.__CELL_SIZE/2), self.__CELL_SIZE/2 - 4)
                 else:
-                    pygame.draw.rect(self.win, "black", (x, y, self.CELL_SIZE, self.CELL_SIZE), 2)
+                    pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
 
-                if (bombs := self.bomb_field.get_adjacent_bombs_count(i, j)) > 0:
+                if (bombs := self.__game_controller.get_adjacent_bombs_count(i, j)) > 0:
                     text = self.__NUM_FONT.render(str(bombs), 1, MainWindow.__NUM_COLORS[bombs])
-                    self.win.blit(text, (x + (self.CELL_SIZE/2 - text.get_width()/2), y + (self.CELL_SIZE/2 - text.get_height()/2)))
+                    self.__win.blit(text, (x + (self.__CELL_SIZE/2 - text.get_width()/2), y + (self.__CELL_SIZE/2 - text.get_height()/2)))
 
         pygame.display.update()
 
 
     def draw_final_message(self, text):
         text = self.__FINAL_FONT.render(text, 1, "black")
-        self.win.blit(text, (MainWindow.__WIDTH/2 - text.get_width()/2,
+        self.__win.blit(text, (MainWindow.__WIDTH/2 - text.get_width()/2,
                     MainWindow.__HEIGHT/2 - text.get_height()/2))
         pygame.display.update()
 
 
-    def __get_grid_pos(self, mouse_pos):
+    def __convert_mouse_coords_to_grid(self, mouse_pos):
         mx, my = mouse_pos
-        row = int(my // self.CELL_SIZE)
-        col = int(mx // self.CELL_SIZE)
+        row = int(my // self.__CELL_SIZE)
+        col = int(mx // self.__CELL_SIZE)
         return (row, col)   
 
 
     def complete_lost_game(self):
-        self.bomb_field.uncover_bombs()
+        self.__game_controller.uncover_bombs()
         self.draw()
-        self.bomb_field.reset()
         self.draw_final_message("You lost! Try again...")
         pygame.time.delay(5000)
-        self.game_status = GameStatus.IN_PROGRESS
-        self.start_time = time.time()
+        self.__game_controller.reset()
 
 
     def complete_victory_game(self):
         self.draw()
-        self.bomb_field.reset()
-        game_time = time.time() - self.start_time
-        self.draw_final_message(f"You won in {int(game_time)} s")
+        game_time = self.__game_controller.get_game_time()
+        self.draw_final_message(f"You won in {game_time} s")
         pygame.time.delay(5000)
-        self.game_status = GameStatus.IN_PROGRESS
-        self.start_time = time.time()
+        self.__game_controller.reset()
 
 
     def run_game(self):
@@ -123,25 +117,23 @@ class MainWindow:
                     break
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    row, col = self.__get_grid_pos(pygame.mouse.get_pos()) 
+                    row, col = self.__convert_mouse_coords_to_grid(pygame.mouse.get_pos()) 
                     mouse_pressed = pygame.mouse.get_pressed()
 
                     if mouse_pressed[0]:     
-                        self.bomb_field.uncover_cell(row, col)
+                        self.__game_controller.uncover_cell(row, col)
 
-                        if self.bomb_field.is_bomb(row, col): 
-                            self.game_status = GameStatus.LOST
-
-                        if self.bomb_field.is_victory():
-                            self.game_status = GameStatus.VICTORY
+                        if self.__game_controller.is_bomb(row, col): 
+                            self.__game_controller.set_game_lost()
 
                     elif mouse_pressed[2]:
-                        self.bomb_field.flag_cell(row, col)
-            
-                if self.game_status == GameStatus.LOST:
+                        self.__game_controller.handle_flag_event(row, col)
+
+                status = self.__game_controller.get_game_status()
+                if status == GameStatus.LOST:
                     self.complete_lost_game()
-                elif self.game_status == GameStatus.VICTORY:
+                elif status == GameStatus.VICTORY:
                     self.complete_victory_game()
 
-                self.draw()
+            self.draw()
         pygame.quit()

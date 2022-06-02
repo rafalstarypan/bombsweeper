@@ -3,7 +3,7 @@ main module used to run program
 """
 
 from game_rules import *
-from bomb_field import *
+from game_controller import *
 from main_window import MainWindow
 
 def main():

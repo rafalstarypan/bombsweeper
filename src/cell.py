@@ -10,18 +10,31 @@ class Cell:
         self.__cell_type = cell_type
         self.__adjacent_bombs = 0
 
+
     def get_cell_type(self):
         return self.__cell_type
+
 
     def get_adjacent_bombs(self):
         return self.__adjacent_bombs
 
+
     def set_cell_type(self, cell_type: CellType):
         self.__cell_type = cell_type
+
+
+    def is_bomb(self):
+        return self.__cell_type == CellType.BOMB
+
+    
+    def is_empty(self):
+        return self.__cell_type == CellType.EMPTY
+
 
     def increment_adjacent_bombs(self):
         self.__adjacent_bombs += 1
         return self.__adjacent_bombs
+
 
     def __str__(self):
         if self.__cell_type == CellType.BOMB:
