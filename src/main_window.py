@@ -24,7 +24,7 @@ class MainView:
     }
 
     def __init__(self, game_mode: GameMode, nickname: str):
-        self.__game_controller = GameController(game_mode)
+        self.__game_controller = GameController(game_mode, nickname)
         self.__CELL_SIZE =  MainView.__WIDTH / self.__game_controller.get_size()
         
         pygame.init()
@@ -35,7 +35,7 @@ class MainView:
         self.__TIME_FONT = pygame.font.SysFont('comicsans', 40)
         
 
-    def draw(self):
+    def __draw(self):
         self.__win.fill(MainView.__BG_COLOR)
 
         size = self.__game_controller.get_size()
@@ -77,34 +77,17 @@ class MainView:
         pygame.display.update()
 
 
-    def draw_final_message(self, text):
-        text = self.__FINAL_FONT.render(text, 1, "black")
-        self.__win.blit(text, (MainView.__WIDTH/2 - text.get_width()/2,
-                    MainView.__HEIGHT/2 - text.get_height()/2))
-        pygame.display.update()
-
-
     def __convert_mouse_coords_to_grid(self, mouse_pos):
         mx, my = mouse_pos
         row = int(my // self.__CELL_SIZE)
         col = int(mx // self.__CELL_SIZE)
         return (row, col)   
 
-
-    def complete_lost_game(self):
+    
+    def __show_all_bombs(self):
         self.__game_controller.uncover_bombs()
-        self.draw()
-        self.draw_final_message("You lost! Try again...")
+        self.__draw()
         pygame.time.delay(5000)
-        self.__game_controller.reset()
-
-
-    def complete_victory_game(self):
-        self.draw()
-        game_time = self.__game_controller.get_game_time()
-        self.draw_final_message(f"You won in {game_time} s")
-        pygame.time.delay(5000)
-        self.__game_controller.reset()
 
 
     def run_game(self):
@@ -130,10 +113,11 @@ class MainView:
                         self.__game_controller.handle_flag_event(row, col)
 
                 status = self.__game_controller.get_game_status()
-                if status == GameStatus.LOST:
-                    self.complete_lost_game()
-                elif status == GameStatus.VICTORY:
-                    self.complete_victory_game()
-
-            self.draw()
+                if status != GameStatus.IN_PROGRESS:
+                    run = False
+                    if status == GameStatus.LOST:
+                        self.__show_all_bombs()
+                    
+            self.__draw()
         pygame.quit()
+        return self.__game_controller.get_game_summary()

@@ -12,8 +12,9 @@ class GameStatus(Enum):
 
 
 class GameController:
-    def __init__(self, game_mode: GameMode):
+    def __init__(self, game_mode: GameMode, nickname: str):
         self.__game_mode = game_mode
+        self.__nickname = nickname
         self.reset()
 
     
@@ -102,4 +103,8 @@ class GameController:
     
     def set_game_lost(self):
         self.__game_status = GameStatus.LOST
+
+    
+    def get_game_summary(self):
+        return (self.__nickname, self.__game_status, self.get_game_time())
 

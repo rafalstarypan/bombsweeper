@@ -31,3 +31,8 @@ class GameRules(ABC):
     @staticmethod
     def get_flags_count(game_mode: GameMode):
         return GameRules.__BOMBS_COUNT[game_mode]
+
+
+class GameRestart(Enum):
+    RETRY       = auto()
+    CHANGE_MODE = auto()
