@@ -1,6 +1,6 @@
 from summary_view import SummaryView
 from welcome_view import *
-from main_window import *
+from main_view import *
 from game_rules import GameRestart
 
 class ViewManager:
