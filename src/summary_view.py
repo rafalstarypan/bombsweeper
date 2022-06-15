@@ -3,10 +3,27 @@ from game_rules import GameRestart
 import pygame
 
 class SummaryView:
+    """
+    Summary view class responsible for displaying the game result information.
+    It allows the player to retry the game or to go back to the welcome view
+    in order to change nickname and/or game difficulty
+    """
+
     __WIDTH = 700
+    """
+    Width of the window
+    """
+
     __HEIGHT = 800
+    """
+    Height of the window
+    """
 
     def __init__(self, game_status: GameStatus, nickname: str, game_time: int):
+        """
+        Initializes the object with required Pygame
+        attributes 
+        """
         self.__game_status = game_status
         self.__nickname = nickname
         self.__game_time = game_time
@@ -19,18 +36,27 @@ class SummaryView:
 
     
     def __get_summary_message(self):
+        """
+        Returns the final player's message depending on the result of the game
+        """
         if self.__game_status == GameStatus.VICTORY:
             return (f"Congrats {self.__nickname}!", f"You won in {self.__game_time} s")
         return (f"Sorry {self.__nickname}.", "You lost :(")
 
 
     def __get_image_filepath(self):
+        """
+        Returns the image filepath depending on the result of the game
+        """
         if self.__game_status == GameStatus.VICTORY:
             return "../images/victory.png"
         return "../images/lost.png"
 
 
     def __draw(self):
+        """
+        Displays the content inside the window
+        """
         self.__screen.fill((155,155,155))
 
         player_msg, result_msg = self.__get_summary_message()
@@ -64,6 +90,9 @@ class SummaryView:
 
     
     def display(self):
+        """
+        Handles player's events and refreshes the displayed content
+        """
         while True:
             self.__draw()
             for event in pygame.event.get():

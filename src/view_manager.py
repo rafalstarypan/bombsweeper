@@ -4,11 +4,18 @@ from main_view import *
 from game_rules import GameRestart
 
 class ViewManager:
-    def __init__(self):
-        pass
+    """
+    Class manages the information flow between 
+    the displayed windows
+    """
 
+    @staticmethod
+    def manage_game_cycle():
+        """
+        Method responsible for managing the information flow between 
+        the displayed windows
+        """
 
-    def manage_game_cycle(self):
         game_restart = GameRestart.CHANGE_MODE
         nickname, selected_game_mode = None, None
 

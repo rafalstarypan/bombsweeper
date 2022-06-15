@@ -3,10 +3,26 @@ from game_rules import GameMode
 import pygame
 
 class WelcomeView:
+    """
+    View class responsible for the welcome window where
+    the player has to give their nickname and select
+    the difficulty mode
+    """
+
     __WIDTH = 700
+    """
+    Width of the window
+    """
     __HEIGHT = 800
+    """
+    Height of the window
+    """
 
     def __init__(self):
+        """
+        Initializes the object with required Pygame
+        attributes 
+        """
         self.__selected_game_mode = None
         self.__player = ""
         self.__active_input = False
@@ -20,6 +36,9 @@ class WelcomeView:
 
     
     def __draw(self):
+        """
+        Displays the content inside the window
+        """
         self.__screen.fill((155,155,155))
 
         header_text = self.__HEADER_FONT.render("Enter your nick", 0.5, "black")
@@ -79,6 +98,9 @@ class WelcomeView:
 
     
     def display(self):
+        """
+        Handles player's events and refreshes the displayed content
+        """
         while True:
             self.__draw()
             for event in pygame.event.get():

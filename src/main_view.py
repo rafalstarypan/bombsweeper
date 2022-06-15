@@ -5,12 +5,42 @@ from game_controller import *
 
 
 class MainView:
+    """
+    Main view class of the game window.
+    It is responsible for all the visual functionalities
+    in accordance with the game rules
+    """
+
     __WIDTH = 700
+    """
+    Width of the window
+    """
+
     __HEIGHT = 800
+    """
+    Height of the window
+    """
+
     __BG_COLOR = "white"
+    """
+    Background color
+    """
+
     __RECT_COLOR = (200, 200, 200)
+    """
+    Covered cell color
+    """
+
     __CLICKED_RECT_COLOR = (140, 140, 140)
+    """
+    Uncovered cell color
+    """
+
     __BOMB_COLOR = "red"
+    """
+    Revealed bombs color
+    """
+
     __NUM_COLORS = {
         1: "black", 
         2: "green", 
@@ -21,8 +51,15 @@ class MainView:
         7: "blue",
         8: "pink",
     }
+    """
+    Adjacent bombs count information colors
+    """
 
     def __init__(self, game_mode: GameMode, nickname: str):
+        """
+        Initializes the object with required Pygame
+        attributes as well as the GameController instance
+        """
         self.__game_controller = GameController(game_mode, nickname)
         self.__CELL_SIZE =  MainView.__WIDTH / self.__game_controller.get_size()
         
@@ -35,6 +72,9 @@ class MainView:
         
 
     def __draw(self):
+        """
+        Displays the content inside the window
+        """
         self.__win.fill(MainView.__BG_COLOR)
 
         size = self.__game_controller.get_size()
@@ -82,6 +122,10 @@ class MainView:
 
 
     def __convert_mouse_coords_to_grid(self, mouse_pos):
+        """
+        Returns a cell coordinates converted from Pygame
+        mouse event coordinates
+        """
         mx, my = mouse_pos
         row = int(my // self.__CELL_SIZE)
         col = int(mx // self.__CELL_SIZE)
@@ -89,12 +133,18 @@ class MainView:
 
     
     def __show_all_bombs(self):
+        """
+        Shows bombs location to the player after a lost game.
+        """
         self.__game_controller.uncover_bombs()
         self.__draw()
         pygame.time.delay(5000)
 
 
     def run_game(self):
+        """
+        Handles player's events and refreshes the displayed content
+        """
         run = True
 
         while run:
