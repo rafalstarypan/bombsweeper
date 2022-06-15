@@ -50,7 +50,11 @@ class GameController:
 
 
     def uncover_cell(self, row, col):
-        if self.is_bomb(row, col) or self.is_flag(row, col) or not self.is_covered(row, col):
+        if self.is_flag(row, col) or not self.is_covered(row, col):
+            return 
+
+        if self.is_bomb(row, col):
+            self.__game_status = GameStatus.LOST
             return
         
         self.__bomb_field.uncover(row, col)
@@ -99,10 +103,6 @@ class GameController:
     
     def get_remaining_flags(self):
         return self.__flag_manager.get_remaining_flags()
-
-    
-    def set_game_lost(self):
-        self.__game_status = GameStatus.LOST
 
     
     def get_game_summary(self):

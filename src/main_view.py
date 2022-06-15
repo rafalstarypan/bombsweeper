@@ -8,7 +8,6 @@ class MainView:
     __WIDTH = 700
     __HEIGHT = 800
     __BG_COLOR = "white"
-    __FLAG_COLOR = "green"
     __RECT_COLOR = (200, 200, 200)
     __CLICKED_RECT_COLOR = (140, 140, 140)
     __BOMB_COLOR = "red"
@@ -53,9 +52,10 @@ class MainView:
                 y = self.__CELL_SIZE * i
                 x = self.__CELL_SIZE * j
 
-                flag_image = pygame.image.load("../images/flag2.png").convert() 
+                flag_image = pygame.image.load("../images/flag.png").convert() 
 
                 if self.__game_controller.is_flag(i, j):
+                    pygame.draw.rect(self.__win, MainView.__RECT_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
                     rect = flag_image.get_rect()
                     rect.center = (x + self.__CELL_SIZE//2, y + self.__CELL_SIZE//2)
                     self.__win.blit(flag_image, rect)
@@ -109,9 +109,6 @@ class MainView:
 
                     if mouse_pressed[0]:     
                         self.__game_controller.uncover_cell(row, col)
-
-                        if self.__game_controller.is_bomb(row, col): 
-                            self.__game_controller.set_game_lost()
 
                     elif mouse_pressed[2]:
                         self.__game_controller.handle_flag_event(row, col)
