@@ -24,6 +24,12 @@ class SummaryView:
         return (f"Sorry {self.__nickname}.", "You lost :(")
 
 
+    def __get_image_filepath(self):
+        if self.__game_status == GameStatus.VICTORY:
+            return "../images/victory.png"
+        return "../images/lost.png"
+
+
     def __draw(self):
         self.__screen.fill((155,155,155))
 
@@ -36,8 +42,11 @@ class SummaryView:
         result_msg_header = pygame.Rect(175, 110, 600, 600)
         self.__screen.blit(header_text, result_msg_header)
 
-        image = pygame.Rect(200, 200, 400, 400)
-        pygame.draw.rect(self.__screen, "red", image)
+        image_filepath = self.__get_image_filepath()
+        image = pygame.image.load(image_filepath).convert() 
+        rect = image.get_rect()
+        rect.topleft = (200, 200)
+        self.__screen.blit(image, rect)
 
         self.__retry_button = pygame.Rect(175, 700, 200, 50)
         t_retry = pygame.Rect(237, 702, 200, 50)

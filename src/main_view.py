@@ -53,8 +53,12 @@ class MainView:
                 y = self.__CELL_SIZE * i
                 x = self.__CELL_SIZE * j
 
+                flag_image = pygame.image.load("../images/flag2.png").convert() 
+
                 if self.__game_controller.is_flag(i, j):
-                    pygame.draw.rect(self.__win, MainView.__FLAG_COLOR, (x, y, self.__CELL_SIZE, self.__CELL_SIZE))
+                    rect = flag_image.get_rect()
+                    rect.center = (x + self.__CELL_SIZE//2, y + self.__CELL_SIZE//2)
+                    self.__win.blit(flag_image, rect)
                     pygame.draw.rect(self.__win, "black", (x, y, self.__CELL_SIZE, self.__CELL_SIZE), 2)
                     continue
 
