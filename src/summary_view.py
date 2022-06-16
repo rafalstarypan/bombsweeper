@@ -75,13 +75,13 @@ class SummaryView:
         self.__screen.blit(image, rect)
 
         self.__retry_button = pygame.Rect(175, 700, 200, 50)
-        t_retry = pygame.Rect(237, 702, 200, 50)
+        t_retry = pygame.Rect(252, 714, 200, 50)
         textField = self.__BUTTON_FONT.render("Retry", 0.5, "white")
         pygame.draw.rect(self.__screen, "green", self.__retry_button) 
         self.__screen.blit(textField, t_retry)
 
         self.__change_mode_button = pygame.Rect(425, 700, 200, 50)
-        t_change_mode = pygame.Rect(432, 702, 200, 50)
+        t_change_mode = pygame.Rect(457, 714, 200, 50)
         textField = self.__BUTTON_FONT.render("Change mode", 0.5, "white")
         pygame.draw.rect(self.__screen, "orange", self.__change_mode_button) 
         self.__screen.blit(textField, t_change_mode)

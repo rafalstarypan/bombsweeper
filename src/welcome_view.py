@@ -45,7 +45,7 @@ class WelcomeView:
         game_mode_header = pygame.Rect(100, 50, 500, 500)
         self.__screen.blit(header_text, game_mode_header)
 
-        self.__player_input = pygame.Rect(100, 130, 400, 50)
+        self.__player_input = pygame.Rect(100, 115, 400, 50)
         input_color = "grey" if self.__active_input else "white" 
         pygame.draw.rect(self.__screen, input_color, self.__player_input) 
 
@@ -60,7 +60,7 @@ class WelcomeView:
         self.__easy_mode_button = pygame.Rect(265, 286, 190, 50)
         self.__medium_mode_button  = pygame.Rect(265, 330, 190, 50)
         self.__hard_mode_button = pygame.Rect(265, 380, 190, 50)
-        self.__play_button = pygame.Rect(100, 480, 500, 50)
+        self.__play_button = pygame.Rect(100, 478, 500, 50)
 
         easy_button_color = "green"
         medium_button_color = "orange"
@@ -79,10 +79,10 @@ class WelcomeView:
             hard_button_color = "darkred"
         play_button_color = "blue" if self.__ready else "lightgrey"
 
-        t_easy = pygame.Rect(295, 286, 190, 50)
-        t_medium = pygame.Rect(295, 334, 190, 50)
-        t_hard = pygame.Rect(295, 384, 190, 50)
-        t_play = pygame.Rect(310, 483, 100, 50)
+        t_easy = pygame.Rect(325, 296, 190, 50)
+        t_medium = pygame.Rect(325, 344, 190, 50)
+        t_hard = pygame.Rect(325, 394, 190, 50)
+        t_play = pygame.Rect(325, 493, 100, 50)
 
         for txt, color, btn, trect in \
             [["EASY",    easy_button_color,  self.__easy_mode_button,   t_easy], 
