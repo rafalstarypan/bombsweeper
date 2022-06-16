@@ -49,8 +49,8 @@ class SummaryView:
         Returns the image filepath depending on the result of the game
         """
         if self.__game_status == GameStatus.VICTORY:
-            return "../images/victory.png"
-        return "../images/lost.png"
+            return "images/victory.png"
+        return "images/lost.png"
 
 
     def __draw(self):
